@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BIUBIU</title>
+  <title>BIUBIU 发射器</title>
   <style>
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -53,13 +54,32 @@
       height: 130px;
       cursor: pointer;
       user-select: none;
-      transform-origin: 90px 60px;
+      touch-action: manipulation;
+      transform-origin: 115px 82px;
       transition: transform 0.08s ease;
       filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.45));
     }
 
-    .launcher:active {
-      transform: translateX(-6px) rotate(-1.5deg);
+    .launcher.recoil {
+      animation: recoilMove 0.24s ease-out;
+    }
+
+    @keyframes recoilMove {
+      0% {
+        transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+      }
+
+      32% {
+        transform: translateX(-20px) translateY(-16px) rotate(-12deg) scale(0.98);
+      }
+
+      62% {
+        transform: translateX(5px) translateY(4px) rotate(2deg) scale(1.01);
+      }
+
+      100% {
+        transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+      }
     }
 
     .top-rail {
@@ -134,6 +154,41 @@
       box-shadow:
         0 0 14px rgba(56, 189, 248, 0.9),
         0 0 34px rgba(14, 165, 233, 0.55);
+      animation: corePulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes corePulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow:
+          0 0 14px rgba(56, 189, 248, 0.9),
+          0 0 34px rgba(14, 165, 233, 0.55);
+      }
+
+      50% {
+        transform: scale(1.08);
+        box-shadow:
+          0 0 20px rgba(125, 211, 252, 1),
+          0 0 48px rgba(14, 165, 233, 0.8);
+      }
+    }
+
+    .launcher.recoil .energy-core {
+      animation: coreFire 0.22s ease-out;
+    }
+
+    @keyframes coreFire {
+      0% {
+        transform: scale(1);
+      }
+
+      40% {
+        transform: scale(1.35);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     .energy-line {
@@ -218,9 +273,9 @@
       position: absolute;
       left: 0;
       top: -22px;
-      width: 96px;
+      width: 110px;
       height: 44px;
-      background: radial-gradient(circle at left, #ffffff 0%, #fde68a 20%, #38bdf8 42%, transparent 72%);
+      background: radial-gradient(circle at left, #ffffff 0%, #fde68a 18%, #38bdf8 42%, transparent 72%);
       clip-path: polygon(0 50%, 22% 10%, 38% 36%, 100% 50%, 38% 64%, 22% 90%);
       filter: blur(0.2px);
     }
@@ -230,9 +285,10 @@
         opacity: 1;
         transform: scaleX(0.45);
       }
+
       100% {
         opacity: 0;
-        transform: scaleX(1.25);
+        transform: scaleX(1.35);
       }
     }
 
@@ -240,7 +296,7 @@
       position: absolute;
       left: 404px;
       top: 101px;
-      width: 240px;
+      width: 260px;
       height: 8px;
       border-radius: 999px;
       background: linear-gradient(90deg, #e0f2fe, #38bdf8, transparent);
@@ -250,7 +306,7 @@
     }
 
     .beam.active {
-      animation: beamMove 0.22s ease-out forwards;
+      animation: beamMove 0.24s ease-out forwards;
     }
 
     @keyframes beamMove {
@@ -258,9 +314,10 @@
         opacity: 1;
         transform: scaleX(0.2);
       }
+
       100% {
         opacity: 0;
-        transform: translateX(120px) scaleX(1);
+        transform: translateX(150px) scaleX(1);
       }
     }
 
@@ -282,6 +339,7 @@
         transform: translate(0, 0) scale(1);
         opacity: 1;
       }
+
       100% {
         transform: translate(var(--x), var(--y)) scale(0.2);
         opacity: 0;
@@ -306,9 +364,11 @@
         transform: translateX(0) scale(0.8);
         opacity: 0;
       }
+
       20% {
         opacity: 1;
       }
+
       100% {
         transform: translateX(180px) translateY(-22px) scale(1.2);
         opacity: 0;
@@ -331,6 +391,7 @@
       0% {
         opacity: 0.28;
       }
+
       100% {
         opacity: 0;
       }
@@ -344,15 +405,41 @@
       letter-spacing: 1px;
     }
 
-    @media (max-width: 640px) {
-      .launcher-area {
-        transform: scale(0.72);
-        margin-top: -20px;
-        margin-bottom: -30px;
-      }
+    .tap-zone {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 520px;
+      height: 260px;
+      z-index: 10;
+      cursor: pointer;
+      touch-action: manipulation;
+      background: transparent;
+    }
 
+    @media (max-width: 640px) {
       .title {
         font-size: 20px;
+        margin-bottom: 8px;
+      }
+
+      .launcher-area {
+        transform: scale(0.72);
+        margin-top: -8px;
+        margin-bottom: -36px;
+      }
+
+      .hint {
+        margin-top: 10px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .launcher-area {
+        transform: scale(0.66);
+        margin-top: -18px;
+        margin-bottom: -48px;
       }
     }
   </style>
@@ -362,11 +449,11 @@
     <div class="title">BIUBIU LAUNCHER</div>
 
     <div class="launcher-area" id="area">
-      <div class="launcher" onclick="fireBiu()">
+      <div class="launcher" id="launcher">
         <div class="top-rail"></div>
         <div class="rear"></div>
         <div class="main-body"></div>
-        <div class="energy-core" id="core"></div>
+        <div class="energy-core"></div>
         <div class="energy-line"></div>
         <div class="barrel"></div>
         <div class="muzzle"></div>
@@ -377,21 +464,35 @@
 
       <div class="flash" id="flash"></div>
       <div class="beam" id="beam"></div>
+      <div class="tap-zone" id="tapZone"></div>
     </div>
 
-    <div class="hint">点击发射器，触发能量</div>
+    <div class="hint">点击发射器，触发能量 biubiu</div>
   </div>
 
   <div class="screen-flash" id="screenFlash"></div>
 
   <script>
     let audioCtx;
+    let isFiring = false;
+
+    const launcher = document.getElementById("launcher");
+    const tapZone = document.getElementById("tapZone");
+    const flash = document.getElementById("flash");
+    const beam = document.getElementById("beam");
+    const screenFlash = document.getElementById("screenFlash");
+    const area = document.getElementById("area");
 
     function getAudioContext() {
       if (!audioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AudioContextClass();
       }
+
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+
       return audioCtx;
     }
 
@@ -400,60 +501,60 @@
       const now = ctx.currentTime;
 
       const master = ctx.createGain();
-      master.gain.setValueAtTime(0.32, now);
+      master.gain.setValueAtTime(0.34, now);
       master.connect(ctx.destination);
 
       const impact = ctx.createOscillator();
       const impactGain = ctx.createGain();
 
       impact.type = "sawtooth";
-      impact.frequency.setValueAtTime(95, now);
-      impact.frequency.exponentialRampToValueAtTime(42, now + 0.09);
+      impact.frequency.setValueAtTime(105, now);
+      impact.frequency.exponentialRampToValueAtTime(42, now + 0.1);
 
       impactGain.gain.setValueAtTime(0.001, now);
-      impactGain.gain.exponentialRampToValueAtTime(0.5, now + 0.01);
-      impactGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      impactGain.gain.exponentialRampToValueAtTime(0.52, now + 0.012);
+      impactGain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
 
       impact.connect(impactGain);
       impactGain.connect(master);
 
       impact.start(now);
-      impact.stop(now + 0.13);
+      impact.stop(now + 0.14);
 
       const laser = ctx.createOscillator();
       const laserGain = ctx.createGain();
 
       laser.type = "square";
-      laser.frequency.setValueAtTime(1250, now + 0.02);
-      laser.frequency.exponentialRampToValueAtTime(2600, now + 0.1);
-      laser.frequency.exponentialRampToValueAtTime(720, now + 0.2);
+      laser.frequency.setValueAtTime(1100, now + 0.02);
+      laser.frequency.exponentialRampToValueAtTime(2800, now + 0.1);
+      laser.frequency.exponentialRampToValueAtTime(720, now + 0.22);
 
       laserGain.gain.setValueAtTime(0.001, now + 0.02);
-      laserGain.gain.exponentialRampToValueAtTime(0.26, now + 0.035);
-      laserGain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+      laserGain.gain.exponentialRampToValueAtTime(0.28, now + 0.04);
+      laserGain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
 
       laser.connect(laserGain);
       laserGain.connect(master);
 
       laser.start(now + 0.02);
-      laser.stop(now + 0.23);
+      laser.stop(now + 0.25);
 
       const tail = ctx.createOscillator();
       const tailGain = ctx.createGain();
 
       tail.type = "triangle";
-      tail.frequency.setValueAtTime(1800, now + 0.12);
-      tail.frequency.exponentialRampToValueAtTime(3600, now + 0.22);
+      tail.frequency.setValueAtTime(1800, now + 0.13);
+      tail.frequency.exponentialRampToValueAtTime(3800, now + 0.24);
 
-      tailGain.gain.setValueAtTime(0.001, now + 0.12);
-      tailGain.gain.exponentialRampToValueAtTime(0.16, now + 0.14);
-      tailGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+      tailGain.gain.setValueAtTime(0.001, now + 0.13);
+      tailGain.gain.exponentialRampToValueAtTime(0.18, now + 0.15);
+      tailGain.gain.exponentialRampToValueAtTime(0.001, now + 0.31);
 
       tail.connect(tailGain);
       tailGain.connect(master);
 
-      tail.start(now + 0.12);
-      tail.stop(now + 0.3);
+      tail.start(now + 0.13);
+      tail.stop(now + 0.32);
     }
 
     function restartAnimation(el, className) {
@@ -463,13 +564,12 @@
     }
 
     function fireBiu() {
+      if (isFiring) return;
+      isFiring = true;
+
       playBiuSound();
 
-      const flash = document.getElementById("flash");
-      const beam = document.getElementById("beam");
-      const screenFlash = document.getElementById("screenFlash");
-      const area = document.getElementById("area");
-
+      restartAnimation(launcher, "recoil");
       restartAnimation(flash, "active");
       restartAnimation(beam, "active");
       restartAnimation(screenFlash, "active");
@@ -478,6 +578,16 @@
         navigator.vibrate([35, 20, 45]);
       }
 
+      createBiuText();
+      createParticles();
+
+      setTimeout(() => {
+        launcher.classList.remove("recoil");
+        isFiring = false;
+      }, 260);
+    }
+
+    function createBiuText() {
       const text = document.createElement("div");
       text.className = "biu-text";
       text.textContent = "BIU";
@@ -486,13 +596,15 @@
       setTimeout(() => {
         text.remove();
       }, 550);
+    }
 
-      for (let i = 0; i < 16; i++) {
+    function createParticles() {
+      for (let i = 0; i < 18; i++) {
         const p = document.createElement("div");
         p.className = "particle";
 
-        const x = 120 + Math.random() * 180;
-        const y = -50 + Math.random() * 100;
+        const x = 120 + Math.random() * 210;
+        const y = -60 + Math.random() * 120;
 
         p.style.setProperty("--x", x + "px");
         p.style.setProperty("--y", y + "px");
@@ -503,6 +615,21 @@
         }, 500);
       }
     }
+
+    tapZone.addEventListener("pointerdown", function (event) {
+      event.preventDefault();
+      fireBiu();
+    });
+
+    tapZone.addEventListener("touchstart", function (event) {
+      event.preventDefault();
+      fireBiu();
+    }, { passive: false });
+
+    tapZone.addEventListener("click", function (event) {
+      event.preventDefault();
+      fireBiu();
+    });
   </script>
 </body>
 </html>
